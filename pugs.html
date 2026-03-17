@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pugs — Multum in Parvo</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Nunito', sans-serif; background: #fdf8f2; color: #2c2018; overflow-x: hidden; }
+
+:root {
+  --fawn:       #c8956c;
+  --fawn-light: #e8c4a0;
+  --fawn-pale:  #fdf0e4;
+  --biscuit:    #f5e6d3;
+  --charcoal:   #2c2018;
+  --charcoal-mid: #4a3728;
+  --charcoal-soft: #6b5040;
+  --rose:       #c47a8a;
+  --rose-pale:  #f9ecee;
+  --gold:       #c09040;
+  --gold-pale:  #fdf6e0;
+  --slate:      #3d4a5c;
+  --cream:      #fdf8f2;
+  --cream-dark: #f5ede0;
+  --ink:        #2c2018;
+  --muted:      #7a6050;
+  --border:     rgba(44,32,24,0.1);
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--charcoal);
+  padding: 0 3rem; height: 60px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.nav-logo { font-family: 'Lora', serif; font-size: 18px; color: #fff; font-style: italic; letter-spacing: 0.02em; }
+.nav-logo span { color: var(--fawn-light); font-style: normal; font-weight: 600; }
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+.nav-links a:hover { color: var(--fawn-light); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  background: var(--charcoal);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 6rem 5rem 4rem;
+  gap: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-glow {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 75% 60%, rgba(200,149,108,0.12) 0%, transparent 55%),
+              radial-gradient(ellipse at 20% 30%, rgba(196,122,138,0.07) 0%, transparent 50%);
+}
+.hero-bg-word {
+  position: absolute; bottom: -4rem; left: -2rem;
+  font-family: 'Lora', serif; font-size: 24rem; font-weight: 700; font-style: italic;
+  color: rgba(255,255,255,0.02); line-height: 1; pointer-events: none; user-select: none;
+}
+.hero-text { position: relative; z-index: 1; }
+.hero-latin {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--fawn); margin-bottom: 1.75rem;
+}
+.hero-latin::before { content: ''; display: block; width: 32px; height: 2px; background: var(--fawn); border-radius: 1px; }
+.hero h1 {
+  font-family: 'Lora', serif; font-weight: 700; line-height: 1.08;
+  font-size: clamp(3rem, 5vw, 5.5rem); color: #fff; margin-bottom: 1.5rem;
+}
+.hero h1 em { font-style: italic; color: var(--fawn-light); font-weight: 400; }
+.hero-desc { font-size: 1.05rem; color: rgba(255,255,255,0.6); line-height: 1.85; max-width: 440px; margin-bottom: 2.5rem; font-weight: 400; }
+.hero-motto {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px; padding: 10px 20px;
+  font-family: 'Lora', serif; font-style: italic; font-size: 1rem; color: var(--fawn-light);
+}
+.hero-visual { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 10px; }
+.hero-main-img {
+  border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+  overflow: hidden; aspect-ratio: 1;
+  background: var(--charcoal-mid);
+  box-shadow: 0 0 0 8px rgba(200,149,108,0.15), 0 30px 80px rgba(0,0,0,0.6);
+  border: 2px solid rgba(200,149,108,0.2);
+}
+.hero-main-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-img-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hero-img-sm { border-radius: 16px; overflow: hidden; aspect-ratio: 3/2; background: var(--charcoal-mid); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.hero-img-sm img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.snort-badge {
+  position: absolute; top: 8%; right: -4%;
+  background: var(--fawn); color: var(--charcoal); border-radius: 50%;
+  width: 80px; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: 'Lora', serif; font-weight: 700; font-size: 11px; text-align: center; line-height: 1.3;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3); animation: wobble 4s ease-in-out infinite;
+}
+@keyframes wobble { 0%,100%{transform:rotate(-4deg)} 50%{transform:rotate(4deg)} }
+
+/* TICKER */
+.ticker-wrap { background: var(--fawn); overflow: hidden; }
+.ticker-track { display: flex; gap: 3rem; padding: 12px 0; animation: tick 28s linear infinite; white-space: nowrap; }
+.ticker-item { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; color: var(--charcoal); flex-shrink: 0; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
+.ticker-wrinkle { font-size: 14px; }
+@keyframes tick { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* SHARED SECTION STYLES */
+.label-row { display: flex; align-items: center; gap: 12px; font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fawn); margin-bottom: 1.25rem; }
+.label-row::before { content: ''; display: block; width: 28px; height: 2px; background: var(--fawn); border-radius: 1px; }
+.section-h { font-family: 'Lora', serif; font-weight: 700; line-height: 1.2; font-size: clamp(2rem, 3vw, 3rem); color: var(--ink); margin-bottom: 0.75rem; }
+.section-h em { font-style: italic; color: var(--fawn); font-weight: 400; }
+.section-sub { font-size: 15px; color: var(--muted); line-height: 1.8; max-width: 580px; margin-bottom: 3rem; }
+section { padding: 7rem 5rem; }
+.container { max-width: 1120px; margin: 0 auto; }
+
+/* PERSONALITY SECTION */
+.personality-section { background: var(--cream); }
+.personality-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.personality-card {
+  border-radius: 20px; padding: 2rem 1.75rem;
+  position: relative; overflow: hidden;
+  transition: transform 0.25s;
+  border: 1px solid transparent;
+}
+.personality-card:hover { transform: translateY(-5px); }
+.pc-fawn { background: var(--fawn-pale); border-color: var(--fawn-light); }
+.pc-rose { background: var(--rose-pale); border-color: #e8b0be; }
+.pc-gold { background: var(--gold-pale); border-color: #e8d090; }
+.pc-slate { background: #edf0f4; border-color: #c8d0dc; }
+.pc-cream { background: var(--cream-dark); border-color: #e0d0c0; }
+.pc-charcoal { background: #f0ede8; border-color: #d0c8c0; }
+.card-emoji { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+.personality-card h3 { font-family: 'Lora', serif; font-size: 1.15rem; font-weight: 700; color: var(--ink); margin-bottom: 0.6rem; }
+.personality-card p { font-size: 13px; color: var(--muted); line-height: 1.75; }
+
+/* HISTORY */
+.history-section { background: #fff; }
+.history-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+.history-text p { font-size: 15px; color: #555; line-height: 1.9; margin-bottom: 1.25rem; }
+.history-text p strong { color: var(--ink); font-weight: 700; }
+.history-text p em { font-style: italic; color: var(--fawn); }
+.timeline { border-left: 2px solid var(--fawn-light); padding-left: 1.75rem; margin-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+.tl-item { position: relative; }
+.tl-item::before { content: ''; position: absolute; left: -2.3rem; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--fawn); border: 2px solid #fff; }
+.tl-year { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--fawn); margin-bottom: 3px; }
+.tl-item p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+.tl-item p strong { color: var(--ink); }
+.history-imgs { display: flex; flex-direction: column; gap: 12px; position: sticky; top: 90px; }
+.hist-img-main { border-radius: 20px; overflow: hidden; aspect-ratio: 3/4; background: var(--biscuit); box-shadow: 0 16px 50px rgba(44,32,24,0.15); }
+.hist-img-main img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hist-img-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.hist-img-sm { border-radius: 14px; overflow: hidden; aspect-ratio: 1; background: var(--biscuit); }
+.hist-img-sm img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.royal-badge { background: var(--charcoal); color: #fff; border-radius: 12px; padding: 1rem; font-size: 13px; display: flex; align-items: center; gap: 12px; }
+.royal-crown { font-size: 1.75rem; }
+.royal-text strong { display: block; font-size: 14px; margin-bottom: 2px; }
+.royal-text span { color: rgba(255,255,255,0.6); font-size: 12px; }
+
+/* GALLERY */
+.gallery-section { background: var(--biscuit); }
+.gal-layout-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.gal-layout-mid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+.gal-layout-bot { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+.gal-item { border-radius: 14px; overflow: hidden; position: relative; background: var(--cream-dark); transition: transform 0.3s; }
+.gal-item:hover { transform: scale(1.02); z-index: 1; }
+.gal-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gal-wide { aspect-ratio: 16/10; }
+.gal-tall { aspect-ratio: 2/3; }
+.gal-sq { aspect-ratio: 1; }
+.gal-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem 0.85rem 0.75rem; background: linear-gradient(transparent, rgba(44,32,24,0.7)); color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600; opacity: 0; transition: opacity 0.3s; }
+.gal-item:hover .gal-caption { opacity: 1; }
+
+/* STATS */
+.stats-section { background: var(--charcoal); }
+.stats-inner { display: grid; grid-template-columns: 1fr 3fr; gap: 5rem; align-items: center; }
+.stats-left .section-h { color: #fff; }
+.stats-left p { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.8; margin-top: 0.75rem; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.08); border-radius: 20px; overflow: hidden; }
+.stat-cell { background: rgba(255,255,255,0.04); padding: 2rem; transition: background 0.2s; }
+.stat-cell:hover { background: rgba(255,255,255,0.08); }
+.stat-val { font-family: 'Lora', serif; font-size: 3.2rem; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+.sv-fawn { color: var(--fawn-light); }
+.sv-rose { color: #e8a0b0; }
+.sv-gold { color: #d4b060; }
+.sv-slate { color: #90a8c0; }
+.sv-sage { color: #90b890; }
+.sv-cream { color: #e8d8c8; }
+.stat-unit { font-size: 1rem; font-weight: 400; }
+.stat-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+/* PHYSICAL TRAITS */
+.traits-section { background: #fff; }
+.traits-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.traits-img { border-radius: 20px; overflow: hidden; aspect-ratio: 4/5; background: var(--biscuit); box-shadow: 0 20px 60px rgba(44,32,24,0.15); }
+.traits-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.traits-list { display: flex; flex-direction: column; gap: 0; }
+.trait-row { display: flex; gap: 1rem; align-items: flex-start; padding: 1.25rem 0; border-bottom: 1px solid var(--border); }
+.trait-row:first-child { padding-top: 0; }
+.trait-row:last-child { border-bottom: none; }
+.trait-icon-wrap { width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: var(--fawn-pale); }
+.trait-row h4 { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.trait-row p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+.trait-bar-wrap { margin-top: 6px; }
+.trait-bar { height: 4px; background: var(--biscuit); border-radius: 2px; overflow: hidden; width: 100%; }
+.trait-bar-fill { height: 100%; border-radius: 2px; background: var(--fawn); }
+
+/* CARE */
+.care-section { background: var(--fawn-pale); }
+.care-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.care-card { background: #fff; border-radius: 16px; padding: 1.75rem; border: 1px solid var(--border); border-top: 4px solid var(--fawn); transition: transform 0.2s; }
+.care-card:hover { transform: translateY(-3px); }
+.care-card:nth-child(2) { border-top-color: var(--rose); }
+.care-card:nth-child(3) { border-top-color: var(--gold); }
+.care-card:nth-child(4) { border-top-color: var(--charcoal-soft); }
+.care-card:nth-child(5) { border-top-color: var(--slate); }
+.care-card:nth-child(6) { border-top-color: #90b890; }
+.care-card h3 { font-family: 'Lora', serif; font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 10px; }
+.care-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.care-card ul li { font-size: 13px; color: var(--muted); line-height: 1.6; display: flex; gap: 8px; }
+.care-card ul li::before { content: '—'; color: var(--fawn); flex-shrink: 0; }
+
+/* FUN FACTS */
+.facts-section { background: var(--charcoal); }
+.facts-section .label-row { color: var(--fawn-light); }
+.facts-section .label-row::before { background: var(--fawn-light); }
+.facts-section .section-h { color: #fff; }
+.facts-grid { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; overflow: hidden; margin-top: 3rem; }
+.fact-cell { padding: 2.25rem; border-right: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); position: relative; transition: background 0.2s; }
+.fact-cell:hover { background: rgba(255,255,255,0.04); }
+.fact-cell:nth-child(3n) { border-right: none; }
+.fact-cell:nth-last-child(-n+3) { border-bottom: none; }
+.fact-top { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.ft-fawn { background: var(--fawn); }
+.ft-rose { background: var(--rose); }
+.ft-gold { background: var(--gold); }
+.fact-num { font-family: 'Lora', serif; font-size: 2.5rem; font-weight: 700; font-style: italic; color: var(--fawn-light); opacity: 0.2; line-height: 1; margin-bottom: 0.75rem; }
+.fact-cell h3 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+.fact-cell p { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.75; }
+
+/* FAMOUS PUGS */
+.famous-section { background: var(--cream); }
+.famous-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.famous-card { background: #fff; border-radius: 16px; padding: 1.75rem; border: 1px solid var(--border); transition: transform 0.2s; }
+.famous-card:hover { transform: translateY(-4px); }
+.famous-card .emoji-large { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
+.famous-name { font-family: 'Lora', serif; font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.famous-role { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fawn); margin-bottom: 0.75rem; }
+.famous-card p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* FOOTER */
+footer { background: var(--charcoal); padding: 4rem 5rem 3rem; }
+.footer-inner { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: end; padding-bottom: 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.footer-brand { font-family: 'Lora', serif; font-size: 20px; color: #fff; font-style: italic; margin-bottom: 8px; }
+.footer-brand span { color: var(--fawn-light); font-style: normal; font-weight: 600; }
+.footer-tagline { font-size: 13px; color: rgba(255,255,255,0.35); line-height: 1.7; max-width: 380px; }
+.footer-links { display: flex; gap: 2rem; }
+.footer-links a { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.4); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+.footer-links a:hover { color: var(--fawn-light); }
+.footer-bottom { max-width: 1120px; margin: 2rem auto 0; font-size: 11px; color: rgba(255,255,255,0.2); }
+
+@media (max-width: 1000px) {
+  section { padding: 5rem 2rem; }
+  nav { padding: 0 1.5rem; }
+  .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 5rem 2rem 3rem; gap: 3rem; }
+  .hero-bg-word { display: none; }
+  .snort-badge { display: none; }
+  .history-layout, .traits-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .history-imgs { position: static; }
+  .personality-grid { grid-template-columns: 1fr 1fr; }
+  .stats-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .facts-grid { grid-template-columns: 1fr 1fr; }
+  .facts-grid .fact-cell:nth-child(2n) { border-right: none; }
+  .care-grid { grid-template-columns: 1fr; }
+  .famous-grid { grid-template-columns: 1fr 1fr; }
+  .gal-layout-top { grid-template-columns: 1fr 1fr; }
+  .gal-layout-bot { grid-template-columns: 1fr 1fr; }
+  footer { padding: 3rem 2rem; }
+  .footer-inner { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .personality-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .facts-grid { grid-template-columns: 1fr; }
+  .facts-grid .fact-cell { border-right: none; }
+  .famous-grid { grid-template-columns: 1fr; }
+  .gal-layout-mid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">the <span>Pug</span> guide</div>
+  <div class="nav-links">
+    <a href="#personality">Personality</a>
+    <a href="#history">History</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#care">Care</a>
+    <a href="#facts">Fun Facts</a>
+    <a href="#famous">Famous Pugs</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-bg-word">Pug</div>
+  <div class="hero-text">
+    <div class="hero-latin">Canis lupus familiaris</div>
+    <h1>Small dog.<br><em>Enormous</em><br>personality.</h1>
+    <p class="hero-desc">The pug has been stealing hearts — and hogging sofas — for over 2,000 years. Equal parts clown, cuddler, and couch philosopher. There is no dog quite like them.</p>
+    <div class="hero-motto">
+      ✦ &nbsp; <em>Multum in parvo</em> &nbsp; — &nbsp; Much in little
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-main-img">
+      <img src="photo2.jpg" alt="Pug portrait">
+    </div>
+    <div class="snort-badge">Snort<br>Level:<br>MAX</div>
+    <div class="hero-img-row">
+      <div class="hero-img-sm"><img src="photo4.jpg" alt="Pug face"></div>
+      <div class="hero-img-sm"><img src="photo6.jpg" alt="Pug full body"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="ticker">
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Pugs were the official dog of the House of Orange in the Netherlands</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>A group of pugs is called a grumble</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Napoleon's wife Josephine owned a famous pug named Fortune</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Pugs were bred as companions for Chinese emperors</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Queen Victoria had 38 pugs during her reign</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Their wrinkles were once thought to form the Chinese character for "prince"</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Pugs are the largest breed in the toy group</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Pugs were the official dog of the House of Orange in the Netherlands</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>A group of pugs is called a grumble</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Napoleon's wife Josephine owned a famous pug named Fortune</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Pugs were bred as companions for Chinese emperors</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Queen Victoria had 38 pugs during her reign</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Their wrinkles were once thought to form the Chinese character for "prince"</span>
+    <span class="ticker-item"><span class="ticker-wrinkle">🐾</span>Pugs are the largest breed in the toy group</span>
+  </div>
+</div>
+
+<!-- PERSONALITY -->
+<section class="personality-section" id="personality">
+  <div class="container">
+    <div class="label-row">Who they are</div>
+    <h2 class="section-h">Six words that define<br>every <em>pug ever born</em></h2>
+    <p class="section-sub">The pug's Latin motto — <em>multum in parvo</em>, meaning "much in little" — captures everything. Enormous personality in a compact, wrinkly, snorting package.</p>
+    <div class="personality-grid">
+      <div class="personality-card pc-fawn">
+        <span class="card-emoji">🎭</span>
+        <h3>Clownish</h3>
+        <p>Pugs are natural entertainers. They seem to know when they're being watched — and they play to it. Expect running commentary on your life, dramatic reactions to minor events, and a talent for comedy that is entirely unintentional.</p>
+      </div>
+      <div class="personality-card pc-rose">
+        <span class="card-emoji">🛋️</span>
+        <h3>Devoted</h3>
+        <p>The pug is essentially a small person in a dog suit who has decided you are the most important thing in the universe. They will follow you from room to room, sleep on your feet, and make it clear that your personal space is, in fact, their personal space.</p>
+      </div>
+      <div class="personality-card pc-gold">
+        <span class="card-emoji">👑</span>
+        <h3>Regal</h3>
+        <p>Bred for centuries as companions to emperors and royalty, the pug carries itself with the quiet confidence of someone who has always been adored. They have not forgotten this. They will remind you of it — usually at mealtimes.</p>
+      </div>
+      <div class="personality-card pc-slate">
+        <span class="card-emoji">😤</span>
+        <h3>Stubborn</h3>
+        <p>Pugs are highly intelligent dogs who have decided that intelligence should be used for their own benefit, not yours. Training is possible — even enjoyable — but it requires treats, patience, and a willingness to negotiate on a case-by-case basis.</p>
+      </div>
+      <div class="personality-card pc-cream">
+        <span class="card-emoji">🍕</span>
+        <h3>Food-Motivated</h3>
+        <p>There are no greater words in the pug vocabulary than "treat," "dinner," and "did someone say snack?" Their appetite is legendary. Their ability to detect the sound of a bag of food opening from three rooms away is supernatural.</p>
+      </div>
+      <div class="personality-card pc-charcoal">
+        <span class="card-emoji">💤</span>
+        <h3>Nap Champion</h3>
+        <p>The pug's natural resting state is horizontal. They will sleep approximately 14 hours a day and communicate this as though it is a profound achievement. This is, in fact, completely correct. Rest is important. Pugs understand this deeply.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section class="history-section" id="history">
+  <div class="container">
+    <div class="history-layout">
+      <div class="history-text">
+        <div class="label-row">Origin &amp; history</div>
+        <h2 class="section-h">Two thousand years<br>of <em>royal devotion</em></h2>
+        <p>The pug is one of the oldest dog breeds in the world, originating in <strong>ancient China</strong> — likely as far back as 700 BCE — where they were prized companions of the <em>emperors of the Han Dynasty</em>. These dogs lived in extraordinary luxury, guarded by soldiers, and were considered imperial treasures.</p>
+        <p>Dutch traders brought pugs to Europe in the 16th century, where the breed was immediately adopted by the aristocracy. In <strong>1572, a pug named Pompey</strong> reportedly saved the life of William of Orange by barking to wake him when Spanish soldiers approached — cementing the pug as the official dog of the Dutch Royal House of Orange.</p>
+        <p>The breed swept through European royal courts with remarkable speed. <strong>Napoleon's wife Joséphine</strong> refused to share her bed without her pug Fortune. <strong>Queen Victoria</strong> kept as many as 38 pugs and actively participated in breeding programs to refine the type. The pug was registered by the <strong>American Kennel Club in 1885</strong> and has been one of the most beloved companion breeds ever since.</p>
+        <p>The pug we know today is largely shaped by Victorian-era standards — the characteristic deeply wrinkled face, the tight curl of the tail, the compact muscular body. Their motto, <em>multum in parvo</em>, was coined to describe them perfectly: much in little.</p>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-year">~700 BCE</div>
+            <p><strong>Ancient China</strong> — Pugs bred as companions for Han Dynasty emperors. Guarded by soldiers. Kept in absolute luxury.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">1500s</div>
+            <p>Dutch traders bring pugs to Europe. <strong>William of Orange</strong> adopts the breed as the official dog of the Dutch royal house.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">1700s</div>
+            <p>Pugs sweep European royal courts. <strong>Joséphine Bonaparte</strong> refuses to sleep without her pug Fortune. The breed becomes synonymous with aristocratic taste.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">1800s</div>
+            <p><strong>Queen Victoria</strong> keeps 38 pugs and drives breed refinement. The modern pug type is standardised during this era.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">1885</div>
+            <p>The <strong>American Kennel Club</strong> officially registers the pug. The breed's global popularity continues to grow.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">Today</div>
+            <p>One of the world's most recognisable and beloved dog breeds. Still convinced they are royalty. Still correct.</p>
+          </div>
+        </div>
+      </div>
+      <div class="history-imgs">
+        <div class="royal-badge">
+          <div class="royal-crown">👑</div>
+          <div class="royal-text"><strong>Imperial Companion</strong><span>Han Dynasty, China — c. 700 BCE</span></div>
+        </div>
+        <div class="hist-img-main"><img src="photo3.jpg" alt="Pug on couch"></div>
+        <div class="hist-img-row">
+          <div class="hist-img-sm"><img src="photo1.jpg" alt="Pug sleeping"></div>
+          <div class="hist-img-sm"><img src="photo7.jpg" alt="Pug expression"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <div class="container">
+    <div class="label-row">Gallery</div>
+    <h2 class="section-h">All wrinkles.<br><em>All heart.</em></h2>
+    <p class="section-sub">Every pug is a masterpiece of expressive engineering.</p>
+    <div class="gal-layout-top">
+      <div class="gal-item gal-wide"><img src="photo1.jpg" alt="Pug sleeping"><div class="gal-caption">Off the clock. Deeply, professionally off the clock.</div></div>
+      <div class="gal-item gal-tall"><img src="photo2.jpg" alt="Pug portrait"><div class="gal-caption">Portrait of someone who knows exactly what they want</div></div>
+      <div class="gal-item gal-tall"><img src="photo3.jpg" alt="Pug on couch"><div class="gal-caption">Surveying the estate from the arm of the throne</div></div>
+    </div>
+    <div class="gal-layout-mid">
+      <div class="gal-item gal-sq"><img src="photo4.jpg" alt="Pug standing"><div class="gal-caption">The look that says: you have something I want</div></div>
+      <div class="gal-item gal-sq"><img src="photo5.jpg" alt="Pug with friend"><div class="gal-caption">Using the big dog as furniture. No notes.</div></div>
+      <div class="gal-item gal-sq"><img src="photo6.jpg" alt="Pug standing on couch"><div class="gal-caption">Standing at full height. Approximately 12 inches of authority.</div></div>
+      <div class="gal-item gal-sq"><img src="photo7.jpg" alt="Pug"><div class="gal-caption">Another day, another kingdom to oversee</div></div>
+    </div>
+    <div class="gal-layout-bot">
+      <div class="gal-item gal-sq"><img src="photo2.jpg" alt="Pug portrait"><div class="gal-caption">The grumpy philosopher</div></div>
+      <div class="gal-item gal-wide"><img src="photo5.jpg" alt="Pug with big dog"><div class="gal-caption">Best friends. The big one provides warmth. The pug provides attitude.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-inner">
+      <div class="stats-left">
+        <div class="label-row" style="color:var(--fawn-light)"><span style="display:block;width:28px;height:2px;background:var(--fawn-light);border-radius:1px"></span>By the numbers</div>
+        <h2 class="section-h">Pug <em style="color:var(--fawn-light)">facts</em><br>in figures</h2>
+        <p>Small but statistically impressive.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-cell"><div class="stat-val sv-fawn">13–15 <span class="stat-unit">yr</span></div><div class="stat-desc">Average lifespan — robust little dogs</div></div>
+        <div class="stat-cell"><div class="stat-val sv-rose">14–18 <span class="stat-unit">lbs</span></div><div class="stat-desc">Typical adult weight</div></div>
+        <div class="stat-cell"><div class="stat-val sv-gold">2,700+</div><div class="stat-desc">Years of recorded breed history</div></div>
+        <div class="stat-cell"><div class="stat-val sv-slate">38</div><div class="stat-desc">Pugs kept by Queen Victoria at peak</div></div>
+        <div class="stat-cell"><div class="stat-val sv-sage">14 <span class="stat-unit">hr</span></div><div class="stat-desc">Average daily sleep — a lifestyle choice</div></div>
+        <div class="stat-cell"><div class="stat-val sv-cream">1885</div><div class="stat-desc">Year of AKC recognition</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHYSICAL TRAITS -->
+<section class="traits-section">
+  <div class="container">
+    <div class="label-row">Physical characteristics</div>
+    <h2 class="section-h">The anatomy of a <em>pug</em></h2>
+    <div class="traits-layout">
+      <div class="traits-img"><img src="photo4.jpg" alt="Pug anatomy"></div>
+      <div class="traits-list">
+        <div class="trait-row">
+          <div class="trait-icon-wrap">😤</div>
+          <div>
+            <h4>Brachycephalic Head</h4>
+            <p>The pug's flat face and shortened skull are the result of centuries of selective breeding. The deeply wrinkled forehead, large round eyes, and compressed muzzle are defining features of the breed standard — and the source of those iconic snorts, snuffles, and sighs.</p>
+            <div class="trait-bar-wrap"><div class="trait-bar"><div class="trait-bar-fill" style="width:95%"></div></div></div>
+          </div>
+        </div>
+        <div class="trait-row">
+          <div class="trait-icon-wrap">🔄</div>
+          <div>
+            <h4>Tightly Curled Tail</h4>
+            <p>The pug's tail curls tightly over the hip — a double curl is considered the ideal by the breed standard. This distinctive curl is a key identifier and one of the pug's most charming visual features.</p>
+            <div class="trait-bar-wrap"><div class="trait-bar"><div class="trait-bar-fill" style="width:85%"></div></div></div>
+          </div>
+        </div>
+        <div class="trait-row">
+          <div class="trait-icon-wrap">🎨</div>
+          <div>
+            <h4>Coat &amp; Color</h4>
+            <p>Pugs come in two recognized colors: fawn (the classic warm tan) and black. Fawn pugs have a characteristic black mask on the face. The coat is short, smooth, and soft to the touch — but remarkably good at covering every surface in your home with fine hair.</p>
+            <div class="trait-bar-wrap"><div class="trait-bar"><div class="trait-bar-fill" style="width:70%"></div></div></div>
+          </div>
+        </div>
+        <div class="trait-row">
+          <div class="trait-icon-wrap">💪</div>
+          <div>
+            <h4>Compact, Muscular Build</h4>
+            <p>Despite their small stature (10–13 inches at the shoulder), pugs are solidly built with a broad chest and well-developed musculature. The breed standard calls for a "cobby" body — compact, thick-set, and well-proportioned without being leggy or lean.</p>
+            <div class="trait-bar-wrap"><div class="trait-bar"><div class="trait-bar-fill" style="width:80%"></div></div></div>
+          </div>
+        </div>
+        <div class="trait-row">
+          <div class="trait-icon-wrap">👀</div>
+          <div>
+            <h4>Expressive Eyes</h4>
+            <p>Large, round, dark, and extraordinarily expressive — the pug's eyes are capable of conveying the full spectrum of emotion: love, betrayal, deep existential hunger, and the specific disappointment of watching you eat without sharing. They are the most communicative eyes in the dog world.</p>
+            <div class="trait-bar-wrap"><div class="trait-bar"><div class="trait-bar-fill" style="width:100%"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARE -->
+<section class="care-section" id="care">
+  <div class="container">
+    <div class="label-row">Care guide</div>
+    <h2 class="section-h">Keeping your pug<br><em>happy and healthy</em></h2>
+    <p class="section-sub">Pugs are relatively low-maintenance in some ways and require specific attention in others. Know what you're signing up for — and embrace every snorty second of it.</p>
+    <div class="care-grid">
+      <div class="care-card">
+        <h3><span>🏃</span> Exercise</h3>
+        <ul>
+          <li>20–30 minutes of moderate exercise daily is ideal</li>
+          <li>Avoid vigorous exercise in heat or humidity — overheating is a serious risk</li>
+          <li>Short walks, gentle play, and indoor activity are all excellent</li>
+          <li>Watch for labored breathing — rest immediately if panting becomes distressed</li>
+          <li>Mental stimulation with puzzle toys keeps them engaged without overexertion</li>
+        </ul>
+      </div>
+      <div class="care-card">
+        <h3><span>🍖</span> Nutrition</h3>
+        <ul>
+          <li>Pugs will eat anything within reach — and then look for more</li>
+          <li>Measure meals carefully — obesity is the number one health issue in the breed</li>
+          <li>Two small meals per day rather than free-feeding</li>
+          <li>Limit treats and use low-calorie options for training rewards</li>
+          <li>Fresh water available at all times — especially important given their breathing</li>
+        </ul>
+      </div>
+      <div class="care-card">
+        <h3><span>🛁</span> Grooming</h3>
+        <ul>
+          <li>Brush weekly — they shed far more than their size suggests</li>
+          <li>Clean facial wrinkles daily to prevent moisture and bacteria buildup</li>
+          <li>Wipe around the nose roll gently with a soft cloth and keep dry</li>
+          <li>Clean ears weekly and check for signs of infection</li>
+          <li>Trim nails every 3–4 weeks — pugs are not enthusiastic about this</li>
+        </ul>
+      </div>
+      <div class="care-card">
+        <h3><span>🩺</span> Health</h3>
+        <ul>
+          <li>Brachycephalic Obstructive Airway Syndrome (BOAS) — monitor breathing</li>
+          <li>Eye conditions common — cherry eye, entropion, and corneal ulcers</li>
+          <li>Pug Dog Encephalitis (PDE) — a serious neurological condition unique to the breed</li>
+          <li>Skin fold dermatitis if wrinkles are not kept clean and dry</li>
+          <li>Regular veterinary checkups every 6–12 months recommended</li>
+        </ul>
+      </div>
+      <div class="care-card">
+        <h3><span>🧠</span> Training</h3>
+        <ul>
+          <li>Intelligent but selectively obedient — training requires consistency and creativity</li>
+          <li>Positive reinforcement with food rewards works extremely well</li>
+          <li>Short, fun training sessions — 5–10 minutes maximum before they lose interest</li>
+          <li>Early socialisation is important for building a confident, well-adjusted dog</li>
+          <li>Stubbornness is breed-specific — patience is not optional, it is required</li>
+        </ul>
+      </div>
+      <div class="care-card">
+        <h3><span>🏠</span> Living with a Pug</h3>
+        <ul>
+          <li>Excellent apartment dogs — size and moderate exercise needs suit urban living</li>
+          <li>Do not do well in heat or cold — indoor temperature-controlled environments preferred</li>
+          <li>Cannot swim well due to their body shape — supervise around water</li>
+          <li>Highly social — do not thrive when left alone for extended periods</li>
+          <li>The snoring is loud, consistent, and non-negotiable</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FUN FACTS -->
+<section class="facts-section" id="facts">
+  <div class="container">
+    <div class="label-row">Fun facts</div>
+    <h2 class="section-h" style="color:#fff">Things that make<br><em style="color:var(--fawn-light)">pugs remarkable</em></h2>
+    <div class="facts-grid">
+      <div class="fact-cell">
+        <div class="fact-top ft-fawn"></div>
+        <div class="fact-num">01</div>
+        <h3>A Grumble of Pugs</h3>
+        <p>The collective noun for a group of pugs is a "grumble" — which is perhaps the most perfect word in the English language. It captures exactly the sound and energy of multiple pugs assembled in one place.</p>
+      </div>
+      <div class="fact-cell">
+        <div class="fact-top ft-fawn"></div>
+        <div class="fact-num">02</div>
+        <h3>Fortune's Bite</h3>
+        <p>Joséphine Bonaparte's pug Fortune bit Napoleon on their wedding night when the Emperor tried to claim his side of the bed. History does not record who won the argument. History strongly implies it was the pug.</p>
+      </div>
+      <div class="fact-cell">
+        <div class="fact-top ft-fawn"></div>
+        <div class="fact-num">03</div>
+        <h3>The Wrinkle Theory</h3>
+        <p>Ancient Chinese breeders deliberately selected for wrinkles on the forehead that formed the pattern of the Chinese character for "prince." The most prized wrinkles were said to be three distinct lines — a royal signature in fur.</p>
+      </div>
+      <div class="fact-cell">
+        <div class="fact-top ft-rose"></div>
+        <div class="fact-num">04</div>
+        <h3>The Secret Society</h3>
+        <p>In 1740, when the Catholic Church banned Freemasonry, a group of Catholics formed the "Order of the Pug" — a secret society that used the pug as their symbol, representing loyalty and trustworthiness.</p>
+      </div>
+      <div class="fact-cell">
+        <div class="fact-top ft-rose"></div>
+        <div class="fact-num">05</div>
+        <h3>Royal Protector</h3>
+        <p>The pug Pompey is said to have saved William I of Orange's life in 1572 by barking furiously to wake his sleeping master as Spanish soldiers approached. From that moment, the pug became the official mascot of the Dutch royal family.</p>
+      </div>
+      <div class="fact-cell">
+        <div class="fact-top ft-rose"></div>
+        <div class="fact-num">06</div>
+        <h3>Temperature Specialists</h3>
+        <p>Pugs have a remarkably narrow thermal comfort zone. They are unhappy in the cold, dangerously susceptible to heat, and contentedly perfect at exactly room temperature — preferably your room temperature, on your lap, under a blanket.</p>
+      </div>
+      <div class="fact-cell">
+        <div class="fact-top ft-gold"></div>
+        <div class="fact-num">07</div>
+        <h3>Two Ear Types</h3>
+        <p>Pugs have two distinct ear shapes — "rose ears" that fold back to reveal the inner ear, and "button ears" that fold forward to cover it. The breed standard prefers button ears, though individual pugs have strong opinions about their own ear style.</p>
+      </div>
+      <div class="fact-cell">
+        <div class="fact-top ft-gold"></div>
+        <div class="fact-num">08</div>
+        <h3>Celebrity Pugs</h3>
+        <p>Pugs have been owned by everyone from Marie Antoinette to Andy Warhol, Rob Zombie to Jessica Alba. The pug transcends social class, artistic movement, and era. They are universally beloved by people of excellent taste.</p>
+      </div>
+      <div class="fact-cell">
+        <div class="fact-top ft-gold"></div>
+        <div class="fact-num">09</div>
+        <h3>The Sound Design</h3>
+        <p>The pug's audio repertoire includes: snoring at volumes that should require planning permission, a unique reverse-sneeze that sounds like mild cardiac distress but is completely normal, stress grunting, and a triumphant full-body sneeze that they are extremely proud of.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAMOUS PUGS -->
+<section class="famous-section" id="famous">
+  <div class="container">
+    <div class="label-row">Notable pugs</div>
+    <h2 class="section-h">Famous <em>pugs through</em><br>history</h2>
+    <p class="section-sub">Two millennia of rubbing shoulders with the world's most powerful people. The pug has always known where to be.</p>
+    <div class="famous-grid">
+      <div class="famous-card">
+        <span class="emoji-large">⚔️</span>
+        <div class="famous-name">Pompey</div>
+        <div class="famous-role">Royal Protector, c. 1572</div>
+        <p>William I of Orange's pug who allegedly saved his master's life by barking to alert him of approaching Spanish soldiers. Immediately promoted to official mascot of the Dutch royal house. A very good boy.</p>
+      </div>
+      <div class="famous-card">
+        <span class="emoji-large">💍</span>
+        <div class="famous-name">Fortune</div>
+        <div class="famous-role">Joséphine Bonaparte's Pug</div>
+        <p>The famous pug who bit Napoleon on their wedding night when he attempted to displace Fortune from the marital bed. Joséphine reportedly took her pug's side. Napoleon eventually negotiated a truce. The pug had terms.</p>
+      </div>
+      <div class="famous-card">
+        <span class="emoji-large">👑</span>
+        <div class="famous-name">Queen Victoria's Pack</div>
+        <div class="famous-role">38 Royal Pugs, Victorian Era</div>
+        <p>Queen Victoria kept up to 38 pugs during her reign, actively participated in selective breeding to refine the breed standard, and is largely responsible for the pug's global popularity. A true enthusiast.</p>
+      </div>
+      <div class="famous-card">
+        <span class="emoji-large">🎨</span>
+        <div class="famous-name">Archie</div>
+        <div class="famous-role">Andy Warhol's Companion</div>
+        <p>Pop art icon Andy Warhol was devoted to his dachshunds and pugs. Several appeared in his work. It is widely accepted that Warhol had extraordinarily good taste in art, New York City, and dogs.</p>
+      </div>
+      <div class="famous-card">
+        <span class="emoji-large">🎬</span>
+        <div class="famous-name">Frank</div>
+        <div class="famous-role">Men in Black (1997)</div>
+        <p>The alien pug from the Men in Black franchise became one of cinema's most iconic animal characters. His imperious gaze, absolute lack of interest in human concerns, and impeccable comic timing were entirely true to breed.</p>
+      </div>
+      <div class="famous-card">
+        <span class="emoji-large">🌏</span>
+        <div class="famous-name">Chinese Imperial Pugs</div>
+        <div class="famous-role">Han Dynasty, c. 700 BCE</div>
+        <p>The original pugs — Lo-Sze dogs kept exclusively by the emperors of China, guarded by soldiers, and treated as living treasures. The ancestors of every pug that has ever sat on a sofa and looked deeply, profoundly unimpressed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">the <span>pug</span> guide</div>
+      <p class="footer-tagline">An educational reference on Canis lupus familiaris (pug variety) — history, temperament, care, and the considerable art of living with one.</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.akc.org/dog-breeds/pug/" target="_blank">AKC Breed Standard</a>
+      <a href="https://en.wikipedia.org/wiki/Pug" target="_blank">Wikipedia</a>
+    </div>
+  </div>
+  <div class="footer-bottom">The Pug Guide — educational breed reference &nbsp;·&nbsp; Multum in parvo</div>
+</footer>
+
+<script>
+(function() {
+  var t = document.getElementById('ticker');
+  if (t) t.parentNode.appendChild(t.cloneNode(true));
+})();
+</script>
+</body>
+</html>
